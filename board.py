@@ -3,7 +3,7 @@ import utils
 class Board(object):
     """This class represents the board of the connect4 games, with all the
     necessary operations to play a game"""
-    def __init__(self, num_rows=6, num_cols=7):
+    def __init__(self, num_rows, num_cols):
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.diagRanges = {
@@ -52,12 +52,19 @@ class Board(object):
         if row < self.num_rows:
             self.board[col][row] = player
         else:
-            raise Error
+            raise
 
         self.winner = self._getWinner((col,row))
 
         return row
-
+    
+    def get_illegal_columns(self):
+        ill_cols = list(0 for _ in range(self.num_cols))
+        for col in range(self.num_cols):
+            if self.getHeight(col) >= self.num_rows:
+                ill_cols[col] = 1
+        return ill_cols
+        
     def _getWinner(self, pos):
         """Returns the player (boolean) who won, or None if nobody won"""
         tests = []
@@ -126,5 +133,3 @@ class Board(object):
                 numEmpty += int(value == 0)
 
         return numEmpty == 0
-    
-    #Méthodes ajoutées:

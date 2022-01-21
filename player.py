@@ -33,7 +33,7 @@ class HumanPlayer(Player):
     HUMAN = True
 
     def __init__(self):
-        self.name = ""
+        self.name = "human"
 
     def getColumn(self, board):
         """By default, we play in command line, UI subclasses must overwrite
@@ -52,9 +52,21 @@ class RandomPlayer(Player):
     """A player that randomly picks up a valid column"""
 
     def __init__(self):
-        self.name=""
+        self.name="random"
         
     def getColumn(self, board):
         columns = board.getPossibleColumns()
         if columns:
             return random.choice(columns)
+
+
+class PlaySamePlayer(Player):
+    """A player always pick the first valid column"""
+    
+    def __init__(self):
+        self.name="pick first"
+        
+    def getColumn(self, board):
+        columns = board.getPossibleColumns()
+        if columns:
+            return columns[0]

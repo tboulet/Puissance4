@@ -6,7 +6,22 @@ import multiprocessing.pool
 import os.path
 import pickle
 import platform
+import numpy as np
 
+def board2obs(board):
+    return np.array(board)
+
+def average_list(L, n_points = 20):
+    L_average = list()
+    for i in range(min(n_points, len(L))):
+        L_average.append(sum(L[:i+1])/(i+1))
+    for i in range(n_points + 1, len(L) + 1):
+        L_average.append(sum(L[i-n_points:i])/n_points)
+    return L_average
+
+def mean_list(L):
+    if len(L) == 0: return 0
+    else: return sum(L) / len(L)
 
 def longest(seq):
     """Find the longuest sequence values (different from 0) in a list"""

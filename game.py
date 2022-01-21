@@ -45,7 +45,6 @@ class Game(object):
         else:
             print("It's a draw!")
 
-    @utils.timeout(5)
     def getColumn(self, player):
         #sys.stdout = open(os.devnull, 'w')  # disables print
         return player.getColumn(copy.deepcopy(self.board))
@@ -57,11 +56,15 @@ class Game(object):
             player = self.players[self.currPlayer]
             try:
                 col = self.getColumn(player)
+            except TimeoutError as te:
+                print("Player %s has made a timeout"%player.name)
+                self.winner = self.players[(self.currPlayer + 1) % 2]
+                break
             except Exception as e:
                 if self.verbose:
                     print(e)
-                print("Player %i has made a bad choice"%player)
-                self.winner = -player
+                print("Player %s has made a bad choice"%player.name)
+                self.winner = self.players[(self.currPlayer + 1) % 2]
                 break
 
             row = self.board.play(player.color, col)
@@ -69,8 +72,14 @@ class Game(object):
             if pos not in self.board:
                 continue
 
-            self.mayShowDebug()
-            self.winner = self.board.winner
+            if self.verbose: self.mayShowDebug()
+            if self.board.winner == None:
+                self.winner = None
+            elif self.board.winner == -1:
+                self.winner = self.players[1]
+            else:
+                self.winner = self.players[0]
+            
             self.currPlayer = (self.currPlayer + 1) % 2
 
-        self.mayShowDebug()
+        if self.verbose: self.mayShowDebug()
